@@ -87,6 +87,46 @@ async function run() {
       const result = await coffeeCollection.deleteOne(query)
       res.send(result)
     })
+    // user data base
+    
+    const userCollection = database.collection("user")
+
+    app.post('/user',async(req,res)=>{
+      const newUser = req.body
+      console.log(req.body);
+      const result = await userCollection.insertOne(newUser)
+      res.send(result)
+    })
+
+    app.get('/user',async(req,res)=>{
+      const cursor = userCollection.find()
+      const users = await cursor.toArray()
+      res.send(users)
+    })
+
+    app.patch('/user',async(req,res)=>{
+      const user = req.body
+      const filter = {
+        email: user.email
+      }
+      const updateUser = {
+        $set:{
+          lastSignInTime: user.lastSignInTime
+        }
+      }
+      const result = await userCollection.updateOne(filter,updateUser)
+      res.send(result)
+      
+    })
+
+    app.delete('/user/:id',async(req,res)=>{
+      const id = req.params.id;
+      const query = {
+        _id :new ObjectId(id)
+      }
+      const result = await userCollection.deleteOne(query);
+      res.send(result)
+    })
 
 
 
