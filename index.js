@@ -103,6 +103,33 @@ async function run() {
       const users = await cursor.toArray()
       res.send(users)
     })
+    
+    app.get('/user/:id',async(req,res)=>{
+      const id = req.params.id;
+      const query = {
+        _id:new ObjectId(id)
+      }
+      const result = await userCollection.findOne(query)
+      res.send(result)
+    })
+
+    app.patch('/user/:id',async(req,res)=>{
+      const id = req.params.id;
+      const user = req.body;
+      const filter = {
+        _id: new ObjectId(id)
+      }
+      const updateUser ={
+        $set:{
+          fullName:user.updateFullName,
+          email:user.updateEmail,
+          phone:user.updatePhone,
+          photo:user.updatePhoto
+        }
+      }
+      const result = await userCollection.updateOne(filter,updateUser)
+      res.send(result)
+    })
 
     app.patch('/user',async(req,res)=>{
       const user = req.body
